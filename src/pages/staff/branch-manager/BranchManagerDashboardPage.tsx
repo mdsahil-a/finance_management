@@ -56,14 +56,15 @@ export const BranchManagerDashboardPage: React.FC<BranchManagerDashboardPageProp
   const [reconRemarks, setReconRemarks] = useState('All counted till denominations verified and approved.');
   const [reconModalOpen, setReconModalOpen] = useState(false);
 
-  const branch = branches.find((item) => item.id === currentStaff?.branchId) || branches[0];
+  const [selectedBranchId, setSelectedBranchId] = useState<string>(currentStaff?.branchId || 'BR-MUM-01');
+  const branch = branches.find((item) => item.id === selectedBranchId) || branches[0];
   const branchApplications = applications
-    .filter((app) => app.assignedBranchId === branch.id)
+    .filter((app) => selectedBranchId === 'ALL' || app.assignedBranchId === branch.id)
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 
-  const branchLoans = loans.filter((l) => l.branchId === branch.id);
+  const branchLoans = loans.filter((l) => selectedBranchId === 'ALL' || l.branchId === branch.id);
   const branchTxns = transactions.filter((t) => branchLoans.some((l) => l.loanAccountNumber === t.loanAccountNumber || l.applicationReference === t.applicationReference));
-  const branchRecons = reconciliations.filter((r) => r.branchId === branch.id);
+  const branchRecons = reconciliations.filter((r) => selectedBranchId === 'ALL' || r.branchId === branch.id);
 
   const awaitingReviewApps = branchApplications.filter((a) => a.status === 'Awaiting Authorized Review');
   const activeLoans = branchLoans.filter((l) => l.status === 'Active');
@@ -139,12 +140,27 @@ export const BranchManagerDashboardPage: React.FC<BranchManagerDashboardPageProp
           </p>
         </div>
 
-        {awaitingReviewApps.length > 0 && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#A71930] text-white shadow-sm animate-pulse">
-            <ShieldCheck className="w-4 h-4 text-[#FFE59E]" />
-            <span>{awaitingReviewApps.length} Sanction Approvals Pending</span>
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          <select
+            value={selectedBranchId}
+            onChange={(e) => setSelectedBranchId(e.target.value)}
+            className="px-3 py-1.5 rounded-xl border border-gray-300 text-xs font-semibold bg-white text-gray-800 outline-none focus:border-[#701525]"
+          >
+            <option value="ALL">All Branches Oversight ({applications.length} Files)</option>
+            {branches.map((b) => (
+              <option key={b.id} value={b.id}>
+                {b.name}
+              </option>
+            ))}
+          </select>
+
+          {awaitingReviewApps.length > 0 && (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-[#A71930] text-white shadow-sm animate-pulse">
+              <ShieldCheck className="w-4 h-4 text-[#FFE59E]" />
+              <span>{awaitingReviewApps.length} Sanction Approvals Pending</span>
+            </span>
+          )}
+        </div>
       </header>
 
       {/* KPI Cards */}

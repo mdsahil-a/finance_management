@@ -172,24 +172,10 @@ export const StaffLayout: React.FC = () => {
 
   const navLinks = getNavLinks();
 
-  const handleRoleQuickSwitch = (targetStaffId: string) => {
-    const targetUser = staffUsers.find(s => s.id === targetStaffId);
-    if (targetUser && targetUser.isActive) {
-      loginStaff(targetUser);
-      navigate(ROLE_DEFAULT_ROUTES[targetUser.role]);
-    }
+  const handleSwitchAccount = () => {
+    logoutStaff();
+    navigate('/staff/login');
   };
-
-  const allRolePills = [
-    { id: 'ADMIN001', label: 'Admin', role: 'SUPER_ADMIN' },
-    { id: 'BRANCH001', label: 'Manager', role: 'BRANCH_MANAGER' },
-    { id: 'LOAN001', label: 'Loan Off.', role: 'LOAN_OFFICER' },
-    { id: 'WEIGHT001', label: 'Appraiser', role: 'GOLD_APPRAISER' },
-    { id: 'ENTRY001', label: 'Credit Off.', role: 'CREDIT_OFFICER' },
-    { id: 'CASH001', label: 'Cashier', role: 'CASHIER' },
-    { id: 'VAULT001', label: 'Custody', role: 'CUSTODY_OFFICER' },
-    { id: 'AUDIT001', label: 'Auditor', role: 'AUDITOR' },
-  ];
 
   return (
     <div className="min-h-screen bg-[#F6F4EE] flex text-[#242424] font-sans">
@@ -257,32 +243,25 @@ export const StaffLayout: React.FC = () => {
           })}
         </nav>
 
-        {/* Quick Role Switcher */}
-        <div className="p-3 border-t border-white/10 bg-black/20">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-[#C9A45C] mb-2 flex items-center gap-1">
-            <UserCheck className="w-3 h-3" />
-            <span>Fast Role Switcher (8 Roles)</span>
-          </p>
-          <div className="grid grid-cols-2 gap-1 text-[10px]">
-            {allRolePills.map((pill) => {
-              const isCurrent = currentStaff.role === pill.role || 
-                (pill.role === 'GOLD_APPRAISER' && currentStaff.role === 'GOLD_WEIGHTER') ||
-                (pill.role === 'CREDIT_OFFICER' && currentStaff.role === 'FINAL_ENTRY_OPERATOR');
-              return (
-                <button
-                  key={pill.id}
-                  onClick={() => handleRoleQuickSwitch(pill.id)}
-                  className={`p-1.5 rounded border text-left truncate transition-colors ${
-                    isCurrent
-                      ? 'bg-[#C9A45C]/30 text-white border-[#C9A45C] font-bold'
-                      : 'bg-white/5 text-gray-300 border-white/10 hover:bg-white/10'
-                  }`}
-                >
-                  {pill.label}
-                </button>
-              );
-            })}
+        {/* Switch Account Action in Sidebar */}
+        <div className="p-3.5 mx-3 my-2 rounded-xl bg-white/5 border border-white/10 space-y-2">
+          <div className="flex items-center justify-between text-[11px] text-gray-300">
+            <span className="font-bold flex items-center gap-1.5 text-[#E9D6A6]">
+              <UserCheck className="w-3.5 h-3.5 text-[#C9A45C]" />
+              <span>Role Switching</span>
+            </span>
+            <span className="text-[9px] text-[#FFE082] bg-white/10 px-1.5 py-0.5 rounded font-mono">Login Required</span>
           </div>
+          <p className="text-[10px] text-gray-400 leading-tight">
+            To perform workflow actions as another officer (Manager, Appraiser, Cashier, etc.), switch user and authenticate.
+          </p>
+          <button
+            onClick={handleSwitchAccount}
+            className="w-full py-2 px-3 rounded-lg text-xs font-bold bg-[#C9A45C] text-[#58101d] hover:bg-[#FFE082] transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>Switch Staff User</span>
+          </button>
         </div>
 
         {/* Bottom Actions */}
@@ -328,31 +307,16 @@ export const StaffLayout: React.FC = () => {
             </div>
           </div>
 
-          {/* Quick Role Switcher Pills on Top */}
-          <div className="flex items-center gap-2 overflow-x-auto py-1">
-            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider shrink-0 hidden md:inline">
-              Switch Role:
-            </span>
-            <div className="flex items-center gap-1">
-              {allRolePills.map((pill) => {
-                const isCurrent = currentStaff.role === pill.role || 
-                  (pill.role === 'GOLD_APPRAISER' && currentStaff.role === 'GOLD_WEIGHTER') ||
-                  (pill.role === 'CREDIT_OFFICER' && currentStaff.role === 'FINAL_ENTRY_OPERATOR');
-                return (
-                  <button
-                    key={pill.id}
-                    onClick={() => handleRoleQuickSwitch(pill.id)}
-                    className={`px-2 py-1 rounded-md text-[10px] font-bold transition-all shrink-0 ${
-                      isCurrent
-                        ? 'bg-[#701525] text-white shadow-xs'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    {pill.label}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Header Action: Switch Account */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleSwitchAccount}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold text-[#701525] bg-[#FAF8F3] hover:bg-[#FAF3E0] border border-[#E8E2D8] transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="Switch user account (Requires authentication)"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-[#C9A45C]" />
+              <span>Switch User / Role</span>
+            </button>
 
             {/* Notifications Popover */}
             <div className="relative pl-2 border-l border-gray-200">
