@@ -81,8 +81,8 @@ export const FinalEntryFormPage: React.FC = () => {
   const [checkAssessment, setCheckAssessment] = useState<boolean>(existingFinalEntry?.goldAssessmentReviewed ?? true);
   const [checkCalculation, setCheckCalculation] = useState<boolean>(existingFinalEntry?.loanCalculationReviewed ?? true);
   const [checkFields, setCheckFields] = useState<boolean>(existingFinalEntry?.requiredFieldsCompleted ?? true);
-  const [checkKyc, setCheckKyc] = useState<boolean>(existingFinalEntry?.kycDocumentVerified ?? false);
-  const [checkJewelleryPhoto, setCheckJewelleryPhoto] = useState<boolean>(existingFinalEntry?.jewelleryPhotoVerified ?? false);
+  const [checkKyc, setCheckKyc] = useState<boolean>(existingFinalEntry?.kycDocumentVerified ?? true);
+  const [checkJewelleryPhoto, setCheckJewelleryPhoto] = useState<boolean>(existingFinalEntry?.jewelleryPhotoVerified ?? true);
 
   // Return for Correction Modal State
   const [returnModalOpen, setReturnModalOpen] = useState(false);
@@ -490,6 +490,26 @@ export const FinalEntryFormPage: React.FC = () => {
                   className="rounded text-[#701525] focus:ring-[#701525]"
                 />
                 <span className="font-medium text-gray-800">4. Required demo fields verified complete</span>
+              </label>
+
+              <label className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-purple-100 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={checkKyc}
+                  onChange={(e) => setCheckKyc(e.target.checked)}
+                  className="rounded text-[#701525] focus:ring-[#701525]"
+                />
+                <span className="font-medium text-gray-800">5. Government ID &amp; KYC verified</span>
+              </label>
+
+              <label className="flex items-center gap-2.5 p-2 rounded-lg bg-white border border-purple-100 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={checkJewelleryPhoto}
+                  onChange={(e) => setCheckJewelleryPhoto(e.target.checked)}
+                  className="rounded text-[#701525] focus:ring-[#701525]"
+                />
+                <span className="font-medium text-gray-800">6. Jewellery appraisal photo verified</span>
               </label>
             </div>
           </div>

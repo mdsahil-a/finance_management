@@ -75,7 +75,7 @@ export const PublicHeader: React.FC = () => {
               className="inline-flex items-center gap-1.5 text-[#E9D6A6] hover:text-white transition-colors bg-white/10 px-2.5 py-0.5 rounded-full border border-white/20"
             >
               <ShieldAlert className="w-3.5 h-3.5 text-[#C9A45C]" />
-              <span>Staff Management Portal (5 Roles)</span>
+              <span>Staff Management Portal (8 Roles)</span>
             </Link>
           </div>
         </div>
