@@ -9,7 +9,7 @@ import { formatCurrency, formatGrams } from '../../utils/formatters';
 import DocumentUploadWidget, { UploadedDocumentState } from '../../components/DocumentUploadWidget';
 import DocumentPreview from '../../components/DocumentPreview';
 import { SAMPLE_JEWELLERY_PHOTO_URL, SAMPLE_AADHAAR_CARD_DATA_URL, SAMPLE_PAN_CARD_DATA_URL } from '../../utils/fileUpload';
-import { Check, ArrowRight, ArrowLeft, CheckCircle2, Sparkles, User, Scale, CreditCard, FileCheck2, AlertCircle, Copy, Upload } from 'lucide-react';
+import { Check, ArrowRight, ArrowLeft, CheckCircle2, User, Scale, CreditCard, FileCheck2, AlertCircle, Copy, Upload } from 'lucide-react';
 
 export const ApplyPage: React.FC = () => {
   const location = useLocation();
@@ -303,7 +303,7 @@ export const ApplyPage: React.FC = () => {
                 acceptedTypes="image/*,.pdf,application/pdf" accentColor="#059669" id="address-proof-upload" />
             </div>
             <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-[11px] text-gray-500 flex items-start gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-amber-500 shrink-0 mt-0.5" />
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
               <span>All three documents are required. Files are stored in this browser only and are not sent to a server.</span>
             </div>
           </div>

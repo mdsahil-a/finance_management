@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useFinance } from '../../context/FinanceContext';
 import { Loan } from '../../types/finance';
+import { maskIdProof } from '../../utils/formatters';
 import {
   FileText,
   Search,
@@ -11,7 +12,12 @@ import {
   ShieldCheck,
   Phone,
   Eye,
-  X
+  X,
+  CheckCircle2,
+  AlertTriangle,
+  Clock,
+  ArrowUpRight,
+  ArrowRight
 } from 'lucide-react';
 
 export const LoansPage: React.FC = () => {
@@ -60,13 +66,15 @@ export const LoansPage: React.FC = () => {
 
   const handleReturnGoldClick = (loan: Loan) => {
     if (loan.remainingPrincipal > 0) {
-      alert('Cannot return gold while loan balance is pending. Please collect payment first.');
+      alert(`Cannot return gold while loan balance is pending. Customer has ₹${loan.remainingPrincipal.toLocaleString('en-IN')} remaining balance.`);
       return;
     }
-    const updated = returnGold(loan.id);
-    if (updated) {
-      setSelectedLoanForPrint(updated);
-      setActivePrintModal('GOLD_RETURN');
+    if (window.confirm(`Confirm return of gold packet "${loan.safePacketNumber}" (${loan.totalWeightGrams}g) to ${loan.customerName}?`)) {
+      const updated = returnGold(loan.id);
+      if (updated) {
+        setSelectedLoanForPrint(updated);
+        setActivePrintModal('GOLD_RETURN');
+      }
     }
   };
 
@@ -76,35 +84,37 @@ export const LoansPage: React.FC = () => {
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <FileText className="w-6 h-6 text-amber-400" />
-            <span>All Loans Book</span>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-zinc-950 tracking-tight flex items-center gap-2.5 font-heading">
+            <FileText className="w-7 h-7 text-zinc-900" />
+            <span>All Loans Ledger</span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            View all customer gold loans, collect payments, and return gold
+          <p className="text-xs sm:text-sm text-zinc-500 font-medium mt-0.5">
+            Real-time portfolio records, collateral pawn details, collections, and gold release.
           </p>
         </div>
 
         <button
           onClick={() => setIsNewLoanModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg shadow-amber-950/40 transition-all hover:scale-[1.02] self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-semibold text-xs sm:text-sm rounded-full shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] self-start sm:self-auto cursor-pointer"
         >
-          <PlusCircle className="w-4 h-4" />
           <span>+ Give New Loan</span>
+          <div className="w-4 h-4 rounded-full bg-zinc-800 flex items-center justify-center">
+            <ArrowUpRight className="w-3 h-3 text-white" />
+          </div>
         </button>
       </div>
 
-      {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-3 rounded-2xl">
+      {/* Filter Pills & Search Bar (Finvo Rounded Styling) */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-white border border-zinc-200/80 p-3 rounded-2xl shadow-xs">
         
-        {/* Tabs */}
-        <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
+        {/* Pills container */}
+        <div className="flex items-center p-1 bg-zinc-100/90 rounded-full border border-zinc-200/60 overflow-x-auto scrollbar-none gap-0.5">
           <button
             onClick={() => setStatusFilter('all')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'all'
-                ? 'bg-amber-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-zinc-950 text-white shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-950 hover:bg-white/80'
             }`}
           >
             All Loans ({loans.length})
@@ -112,10 +122,10 @@ export const LoansPage: React.FC = () => {
 
           <button
             onClick={() => setStatusFilter('active')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'active'
-                ? 'bg-amber-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-zinc-950 text-white shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-950 hover:bg-white/80'
             }`}
           >
             Active ({activeCount})
@@ -123,10 +133,10 @@ export const LoansPage: React.FC = () => {
 
           <button
             onClick={() => setStatusFilter('due')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'due'
-                ? 'bg-amber-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-zinc-950 text-white shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-950 hover:bg-white/80'
             }`}
           >
             Due / Overdue ({dueCount})
@@ -134,130 +144,130 @@ export const LoansPage: React.FC = () => {
 
           <button
             onClick={() => setStatusFilter('closed')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors whitespace-nowrap ${
+            className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all whitespace-nowrap cursor-pointer ${
               statusFilter === 'closed'
-                ? 'bg-amber-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-zinc-950 text-white shadow-xs'
+                : 'text-zinc-600 hover:text-zinc-950 hover:bg-white/80'
             }`}
           >
-            Closed ({closedCount})
+            Settled ({closedCount})
           </button>
         </div>
 
         {/* Search */}
         <div className="relative w-full md:w-72">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search name, phone, loan #..."
-            className="w-full pl-9 pr-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-amber-500"
+            placeholder="Search name, phone, loan #, packet..."
+            className="w-full pl-9 pr-4 py-2 bg-zinc-50 hover:bg-zinc-100 focus:bg-white border border-zinc-200 focus:border-zinc-900 focus:ring-4 focus:ring-zinc-950/5 rounded-full text-xs text-zinc-900 placeholder-zinc-400 outline-none transition-all"
           />
         </div>
       </div>
 
       {/* Loans Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
-            <thead className="bg-slate-800/80 text-slate-400 uppercase tracking-wider text-[11px] border-b border-slate-800">
+      <div className="bg-white border border-zinc-200/80 rounded-[28px] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.04)] overflow-hidden w-full max-w-full min-w-0">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full min-w-[750px] text-xs text-left">
+            <thead className="bg-zinc-50 text-zinc-600 font-bold text-[11px] border-b border-zinc-200 uppercase tracking-wider">
               <tr>
-                <th className="p-4">Loan # & Date</th>
-                <th className="p-4">Customer</th>
-                <th className="p-4">Gold Ornaments</th>
-                <th className="p-4 text-right">Loan Amount</th>
-                <th className="p-4 text-right">Remaining Principal</th>
-                <th className="p-4 text-right">Monthly Interest</th>
-                <th className="p-4 text-center">Status</th>
-                <th className="p-4 text-center">Actions</th>
+                <th className="py-3.5 px-4">Loan # & Date</th>
+                <th className="py-3.5 px-4">Borrower Customer</th>
+                <th className="py-3.5 px-4">Gold Pledged</th>
+                <th className="py-3.5 px-4 text-right">Sanctioned</th>
+                <th className="py-3.5 px-4 text-right">Outstanding Principal</th>
+                <th className="py-3.5 px-4 text-right">Monthly Interest</th>
+                <th className="py-3.5 px-4 text-center">Status</th>
+                <th className="py-3.5 px-4 text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800 text-slate-300">
+            <tbody className="divide-y divide-zinc-100 text-zinc-700">
               {filteredLoans.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="p-8 text-center text-slate-500">
-                    No loans found matching your criteria.
+                  <td colSpan={8} className="py-16 text-center text-zinc-400 font-medium">
+                    No loans found matching the selected filter or search query.
                   </td>
                 </tr>
               ) : (
                 filteredLoans.map((loan) => (
-                  <tr key={loan.id} className="hover:bg-slate-800/40 transition-colors">
+                  <tr key={loan.id} className="hover:bg-zinc-50/80 transition-colors">
                     
                     {/* Loan # & Date */}
-                    <td className="p-4">
-                      <span className="font-mono font-bold text-amber-400 block text-sm">{loan.id}</span>
-                      <span className="text-[11px] text-slate-400">{loan.loanDate}</span>
-                      <span className="text-[10px] text-slate-500 block">Due: {loan.dueDate}</span>
+                    <td className="py-4 px-4">
+                      <span className="font-mono font-bold text-zinc-900 bg-zinc-100 border border-zinc-200/80 px-2 py-0.5 rounded-full text-xs block w-fit">
+                        {loan.id}
+                      </span>
+                      <span className="text-[11px] text-zinc-500 block mt-1 font-semibold">{loan.loanDate}</span>
+                      <span className="text-[10px] text-zinc-400 block font-medium">Due: {loan.dueDate}</span>
                     </td>
 
                     {/* Customer */}
-                    <td className="p-4">
-                      <span className="font-bold text-white block text-sm">{loan.customerName}</span>
-                      <span className="text-slate-400 flex items-center gap-1 text-[11px]">
-                        <Phone className="w-3 h-3 text-slate-500" />
+                    <td className="py-4 px-4">
+                      <span className="font-bold text-zinc-950 block text-sm font-heading">{loan.customerName}</span>
+                      <span className="text-zinc-500 flex items-center gap-1 text-[11px] mt-0.5 font-medium">
+                        <Phone className="w-3 h-3 text-emerald-600" />
                         {loan.customerPhone}
                       </span>
-                      {loan.customerAddress && (
-                        <span className="text-[10px] text-slate-500 block truncate max-w-[150px]">
-                          {loan.customerAddress}
-                        </span>
-                      )}
+                      <span className="text-[10px] text-zinc-400 block mt-0.5">
+                        {maskIdProof(loan.customerIdProof)}
+                      </span>
                     </td>
 
                     {/* Gold Ornaments */}
-                    <td className="p-4">
-                      <span className="font-bold text-slate-200 block">
-                        {loan.totalWeightGrams.toFixed(2)} grams net
+                    <td className="py-4 px-4">
+                      <span className="font-extrabold text-zinc-900 block font-heading">
+                        {loan.totalWeightGrams.toFixed(2)} g net
                       </span>
-                      <span className="text-[11px] text-slate-400 block">
+                      <span className="text-[11px] text-zinc-500 block truncate max-w-[170px]" title={loan.goldItems.map((i) => i.name).join(', ')}>
                         {loan.goldItems.map((i) => i.name).join(', ')}
                       </span>
-                      <span className="text-[10px] text-amber-400/90 font-medium block">
-                        {loan.safePacketNumber} ({loan.safeStatus})
+                      <span className="text-[10px] text-amber-700 font-semibold block mt-0.5">
+                        {loan.safePacketNumber} · {loan.safeStatus}
                       </span>
                     </td>
 
                     {/* Loan Amount */}
-                    <td className="p-4 text-right">
-                      <span className="font-bold text-slate-300">
+                    <td className="py-4 px-4 text-right">
+                      <span className="font-semibold text-zinc-600">
                         ₹{loan.loanAmount.toLocaleString('en-IN')}
                       </span>
                     </td>
 
                     {/* Remaining Principal */}
-                    <td className="p-4 text-right">
-                      <span className={`font-black text-sm ${loan.remainingPrincipal === 0 ? 'text-slate-500 line-through' : 'text-white'}`}>
+                    <td className="py-4 px-4 text-right">
+                      <span className={`font-extrabold text-sm font-heading ${loan.remainingPrincipal === 0 ? 'text-zinc-400 line-through' : 'text-zinc-950'}`}>
                         ₹{loan.remainingPrincipal.toLocaleString('en-IN')}
                       </span>
                       {loan.interestDue > 0 && (
-                        <span className="text-[10px] text-rose-400 block font-semibold">
+                        <span className="text-[10px] text-rose-600 block font-bold">
                           +₹{loan.interestDue.toLocaleString('en-IN')} due
                         </span>
                       )}
                     </td>
 
                     {/* Monthly Interest */}
-                    <td className="p-4 text-right">
-                      <span className="font-semibold text-emerald-400 block">
-                        ₹{loan.monthlyInterestAmount.toLocaleString('en-IN')} / mo
+                    <td className="py-4 px-4 text-right">
+                      <span className="font-bold text-emerald-700 block">
+                        ₹{loan.monthlyInterestAmount.toLocaleString('en-IN')}
                       </span>
-                      <span className="text-[10px] text-slate-500">
-                        ({loan.monthlyInterestRate}%)
+                      <span className="text-[10px] text-zinc-400 font-medium">
+                        ({loan.monthlyInterestRate}% / mo)
                       </span>
                     </td>
 
                     {/* Status Badge */}
-                    <td className="p-4 text-center">
+                    <td className="py-4 px-4 text-center">
                       <span
-                        className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-bold ${
+                        className={`inline-block px-3 py-0.5 rounded-full text-[11px] font-bold border ${
                           loan.status === 'Fully Paid'
-                            ? 'bg-slate-700/60 text-slate-400 border border-slate-600'
+                            ? 'bg-zinc-100 text-zinc-600 border-zinc-200'
                             : loan.status === 'Overdue'
-                            ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            ? 'bg-rose-50 text-rose-700 border-rose-200'
                             : loan.status === 'Due Soon'
-                            ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                            : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            ? 'bg-amber-50 text-amber-800 border-amber-200'
+                            : 'bg-emerald-50 text-emerald-700 border-emerald-200'
                         }`}
                       >
                         {loan.status}
@@ -265,7 +275,7 @@ export const LoansPage: React.FC = () => {
                     </td>
 
                     {/* Actions */}
-                    <td className="p-4 text-center">
+                    <td className="py-4 px-4 text-center">
                       <div className="flex items-center justify-center gap-1.5">
                         
                         {/* Collect Payment */}
@@ -275,10 +285,10 @@ export const LoansPage: React.FC = () => {
                               setSelectedLoanForPayment(loan);
                               setIsPaymentModalOpen(true);
                             }}
-                            className="p-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors"
+                            className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full transition-colors cursor-pointer shadow-xs"
                             title="Collect payment"
                           >
-                            <Wallet className="w-4 h-4" />
+                            <Wallet className="w-3.5 h-3.5" />
                           </button>
                         )}
 
@@ -286,11 +296,11 @@ export const LoansPage: React.FC = () => {
                         {loan.status === 'Fully Paid' && loan.safeStatus === 'In Safe' && (
                           <button
                             onClick={() => handleReturnGoldClick(loan)}
-                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold transition-colors"
+                            className="inline-flex items-center gap-1 px-3 py-1 bg-zinc-950 hover:bg-zinc-800 text-white rounded-full text-xs font-bold transition-colors cursor-pointer shadow-xs"
                             title="Return Gold to Customer"
                           >
                             <ShieldCheck className="w-3.5 h-3.5" />
-                            <span>Return Gold</span>
+                            <span>Return</span>
                           </button>
                         )}
 
@@ -300,19 +310,19 @@ export const LoansPage: React.FC = () => {
                             setSelectedLoanForPrint(loan);
                             setActivePrintModal('LOAN_SLIP');
                           }}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors"
+                          className="p-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full transition-colors cursor-pointer"
                           title="Print Loan Voucher"
                         >
-                          <Printer className="w-4 h-4" />
+                          <Printer className="w-3.5 h-3.5" />
                         </button>
 
                         {/* View Full Details */}
                         <button
                           onClick={() => setSelectedLoanForView(loan)}
-                          className="p-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg transition-colors"
+                          className="p-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 rounded-full transition-colors cursor-pointer"
                           title="View loan details"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-3.5 h-3.5" />
                         </button>
 
                       </div>
@@ -326,139 +336,190 @@ export const LoansPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Loan Details Modal */}
+      {/* Loan Details Modal (Finvo Modern Modal) */}
       {selectedLoanForView && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl w-full max-w-2xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-xs overflow-y-auto">
+          <div className="bg-white border border-zinc-200 text-zinc-900 rounded-[28px] w-full max-w-2xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 bg-slate-900/90">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-amber-400" />
-                <h3 className="font-bold text-lg">Loan Details: {selectedLoanForView.id}</h3>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-100 bg-zinc-50">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-zinc-950 text-white flex items-center justify-center">
+                  <FileText className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-base sm:text-lg text-zinc-950 font-heading">
+                  Loan Record: <span className="font-mono text-zinc-900">{selectedLoanForView.id}</span>
+                </h3>
               </div>
               <button
                 onClick={() => setSelectedLoanForView(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+                className="text-zinc-400 hover:text-zinc-800 p-1.5 rounded-full hover:bg-zinc-200 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
+            {/* Modal Body */}
             <div className="p-6 overflow-y-auto space-y-5 text-xs">
               
               {/* Customer Info Card */}
-              <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 grid grid-cols-2 gap-3">
+              <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-200/80 grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Customer Name:</span>
-                  <span className="text-sm font-bold text-white">{selectedLoanForView.customerName}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">Mobile Phone:</span>
-                  <span className="text-sm font-bold text-white">{selectedLoanForView.customerPhone}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">Address:</span>
-                  <span className="text-slate-200">{selectedLoanForView.customerAddress || 'Not specified'}</span>
-                </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">ID Proof:</span>
-                  <span className="text-slate-200">{selectedLoanForView.customerIdProof || 'Verified'}</span>
-                </div>
-              </div>
-
-              {/* Financial Snapshot */}
-              <div className="grid grid-cols-3 gap-3 p-4 bg-slate-800/60 rounded-xl border border-slate-700/60">
-                <div>
-                  <span className="text-slate-400 block text-[11px]">Original Loan:</span>
-                  <span className="text-base font-bold text-white">
-                    ₹{selectedLoanForView.loanAmount.toLocaleString('en-IN')}
+                  <span className="text-zinc-500 text-[11px] block font-semibold">Borrower Profile:</span>
+                  <span className="font-extrabold text-zinc-950 text-base font-heading">{selectedLoanForView.customerName}</span>
+                  <span className="text-zinc-600 block mt-0.5 flex items-center gap-1 font-medium">
+                    <Phone className="w-3.5 h-3.5 text-emerald-600" />
+                    {selectedLoanForView.customerPhone}
                   </span>
                 </div>
                 <div>
-                  <span className="text-slate-400 block text-[11px]">Remaining Principal:</span>
-                  <span className="text-base font-black text-amber-400">
+                  <span className="text-zinc-500 text-[11px] block font-semibold">Verified Identification:</span>
+                  <span className="font-bold text-zinc-900 block">{selectedLoanForView.customerIdProof}</span>
+                  <span className="text-zinc-500 block truncate mt-0.5">{selectedLoanForView.customerAddress || 'No address registered'}</span>
+                </div>
+              </div>
+
+              {/* Financial Breakdown */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200/80">
+                  <span className="text-zinc-500 text-[10px] block font-semibold uppercase">Sanctioned:</span>
+                  <span className="font-extrabold text-zinc-950 text-base font-heading">₹{selectedLoanForView.loanAmount.toLocaleString('en-IN')}</span>
+                </div>
+
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200/80">
+                  <span className="text-zinc-500 text-[10px] block font-semibold uppercase">Balance:</span>
+                  <span className={`font-extrabold text-base font-heading ${selectedLoanForView.remainingPrincipal === 0 ? 'text-emerald-700' : 'text-zinc-950'}`}>
                     ₹{selectedLoanForView.remainingPrincipal.toLocaleString('en-IN')}
                   </span>
                 </div>
-                <div>
-                  <span className="text-slate-400 block text-[11px]">Monthly Interest:</span>
-                  <span className="text-base font-bold text-emerald-400">
-                    ₹{selectedLoanForView.monthlyInterestAmount.toLocaleString('en-IN')}
-                  </span>
-                  <span className="text-[10px] text-slate-400">({selectedLoanForView.monthlyInterestRate}%)</span>
+
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200/80">
+                  <span className="text-zinc-500 text-[10px] block font-semibold uppercase">Monthly Interest:</span>
+                  <span className="font-bold text-emerald-700 text-sm">₹{selectedLoanForView.monthlyInterestAmount.toLocaleString('en-IN')}</span>
+                  <span className="text-[10px] text-zinc-400">({selectedLoanForView.monthlyInterestRate}%)</span>
+                </div>
+
+                <div className="p-3.5 bg-zinc-50 rounded-2xl border border-zinc-200/80">
+                  <span className="text-zinc-500 text-[10px] block font-semibold uppercase">Interest Paid:</span>
+                  <span className="font-bold text-zinc-900 text-sm">₹{selectedLoanForView.totalInterestPaid.toLocaleString('en-IN')}</span>
                 </div>
               </div>
 
-              {/* Gold Ornaments */}
+              {/* Pledged Gold Ornaments Table */}
               <div>
-                <h4 className="font-bold text-amber-400 uppercase tracking-wider mb-2">
-                  Gold Ornaments Held ({selectedLoanForView.totalWeightGrams.toFixed(2)}g net)
+                <h4 className="font-bold text-zinc-900 text-xs mb-2 uppercase tracking-wider font-heading">
+                  Pledged Gold Ornaments ({selectedLoanForView.goldItems.length} items):
                 </h4>
-                <div className="bg-slate-800/60 rounded-xl border border-slate-700/60 divide-y divide-slate-700/60">
-                  {selectedLoanForView.goldItems.map((item, idx) => (
-                    <div key={idx} className="p-3 flex items-center justify-between">
-                      <div>
-                        <span className="font-bold text-white block">{item.name}</span>
-                        <span className="text-slate-400 text-[11px]">
-                          Purity: {item.purity} · Gross: {item.grossWeight}g · Net: {item.netWeight}g
-                        </span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-bold text-white">₹{item.estimatedValue.toLocaleString('en-IN')}</span>
-                        <span className="text-slate-400 text-[10px] block">Market Value</span>
-                      </div>
-                    </div>
-                  ))}
+                <div className="border border-zinc-200 rounded-2xl overflow-hidden">
+                  <table className="w-full text-xs">
+                    <thead className="bg-zinc-50 text-zinc-600 font-bold border-b border-zinc-200">
+                      <tr>
+                        <th className="p-2.5 text-left">Item Description</th>
+                        <th className="p-2.5 text-center">Purity</th>
+                        <th className="p-2.5 text-right">Gross Wt</th>
+                        <th className="p-2.5 text-right">Net Wt</th>
+                        <th className="p-2.5 text-right">Valuation</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100 text-zinc-700">
+                      {selectedLoanForView.goldItems.map((item) => (
+                        <tr key={item.id}>
+                          <td className="p-2.5 font-semibold text-zinc-900">{item.name}</td>
+                          <td className="p-2.5 text-center">
+                            <span className="px-2 py-0.5 rounded-full font-bold bg-amber-50 text-amber-800 border border-amber-200 text-[10px]">
+                              {item.purity}
+                            </span>
+                          </td>
+                          <td className="p-2.5 text-right">{item.grossWeight.toFixed(2)} g</td>
+                          <td className="p-2.5 text-right font-bold text-zinc-900">{item.netWeight.toFixed(2)} g</td>
+                          <td className="p-2.5 text-right font-semibold text-zinc-800">₹{item.estimatedValue.toLocaleString('en-IN')}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot className="bg-zinc-50 font-bold border-t border-zinc-200 text-zinc-900">
+                      <tr>
+                        <td colSpan={3} className="p-2.5 text-right">Totals:</td>
+                        <td className="p-2.5 text-right text-zinc-950 font-extrabold">{selectedLoanForView.totalWeightGrams.toFixed(2)} g</td>
+                        <td className="p-2.5 text-right">₹{selectedLoanForView.goldValueTotal.toLocaleString('en-IN')}</td>
+                      </tr>
+                    </tfoot>
+                  </table>
                 </div>
               </div>
 
-              {/* Safe & Timeline */}
-              <div className="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 space-y-2">
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Safe Packet:</span>
-                  <span className="font-bold text-white">{selectedLoanForView.safePacketNumber}</span>
+              {/* Safe & Dates Card */}
+              <div className="bg-zinc-50 p-4 rounded-2xl border border-zinc-200 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div>
+                  <span className="text-zinc-500 text-[10px] block font-medium">Safe Locker Packet:</span>
+                  <span className="font-mono font-bold text-zinc-900">{selectedLoanForView.safePacketNumber}</span>
+                  <span className="text-[11px] text-zinc-600 block mt-0.5">Status: <strong>{selectedLoanForView.safeStatus}</strong></span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Safe Status:</span>
-                  <span className={`font-bold ${selectedLoanForView.safeStatus === 'In Safe' ? 'text-amber-400' : 'text-emerald-400'}`}>
-                    {selectedLoanForView.safeStatus}
-                  </span>
+                <div>
+                  <span className="text-zinc-500 text-[10px] block font-medium">Loan Date & Due Date:</span>
+                  <span className="font-semibold text-zinc-900 block">{selectedLoanForView.loanDate}</span>
+                  <span className="text-[11px] text-zinc-500 block">Due: {selectedLoanForView.dueDate}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Loan Date:</span>
-                  <span className="text-slate-200">{selectedLoanForView.loanDate}</span>
+                <div>
+                  <span className="text-zinc-500 text-[10px] block font-medium">Issued / Appraised By:</span>
+                  <span className="font-semibold text-zinc-900 block">{selectedLoanForView.createdByStaffName || 'Counter Staff'}</span>
+                  {selectedLoanForView.appraisedByStaffName && (
+                    <span className="text-[10px] text-zinc-500 block">Valuer: {selectedLoanForView.appraisedByStaffName}</span>
+                  )}
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-400">Due Date:</span>
-                  <span className="text-slate-200">{selectedLoanForView.dueDate}</span>
-                </div>
-                {selectedLoanForView.notes && (
-                  <div className="pt-2 border-t border-slate-700/60">
-                    <span className="text-slate-400 block text-[11px]">Notes:</span>
-                    <span className="text-slate-300">{selectedLoanForView.notes}</span>
-                  </div>
-                )}
               </div>
 
             </div>
 
-            <div className="p-4 border-t border-slate-800 flex justify-end gap-2 bg-slate-900/90">
-              <button
-                onClick={() => {
-                  setSelectedLoanForPrint(selectedLoanForView);
-                  setActivePrintModal('LOAN_SLIP');
-                }}
-                className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-xs font-semibold"
-              >
-                <Printer className="w-3.5 h-3.5" />
-                <span>Print Loan Voucher</span>
-              </button>
+            {/* Modal Footer Actions */}
+            <div className="p-4 bg-zinc-50 border-t border-zinc-200 flex items-center justify-between gap-3">
               <button
                 onClick={() => setSelectedLoanForView(null)}
-                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold"
+                className="px-5 py-2 bg-white hover:bg-zinc-100 text-zinc-700 font-semibold rounded-full border border-zinc-300 transition-colors text-xs cursor-pointer shadow-xs"
               >
                 Close
               </button>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setSelectedLoanForPrint(selectedLoanForView);
+                    setActivePrintModal('LOAN_SLIP');
+                  }}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 font-semibold rounded-full text-xs transition-colors cursor-pointer"
+                >
+                  <Printer className="w-4 h-4 text-zinc-600" />
+                  <span>Print Slip</span>
+                </button>
+
+                {selectedLoanForView.status !== 'Fully Paid' && (
+                  <button
+                    onClick={() => {
+                      const l = selectedLoanForView;
+                      setSelectedLoanForView(null);
+                      setSelectedLoanForPayment(l);
+                      setIsPaymentModalOpen(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-full text-xs transition-colors cursor-pointer shadow-xs"
+                  >
+                    <Wallet className="w-4 h-4" />
+                    <span>Collect Payment</span>
+                  </button>
+                )}
+
+                {selectedLoanForView.status === 'Fully Paid' && selectedLoanForView.safeStatus === 'In Safe' && (
+                  <button
+                    onClick={() => {
+                      const l = selectedLoanForView;
+                      setSelectedLoanForView(null);
+                      handleReturnGoldClick(l);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold rounded-full text-xs transition-colors cursor-pointer shadow-xs"
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>Return Gold</span>
+                  </button>
+                )}
+              </div>
             </div>
 
           </div>

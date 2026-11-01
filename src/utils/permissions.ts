@@ -1,4 +1,5 @@
 import { StaffRole } from '../types';
+import { AppRole } from '../types/finance';
 
 export const ROLE_LABELS: Record<StaffRole, string> = {
   SUPER_ADMIN: 'Super Administrator',
@@ -11,6 +12,14 @@ export const ROLE_LABELS: Record<StaffRole, string> = {
   CASHIER: 'Cashier & Disbursement Officer',
   CUSTODY_OFFICER: 'Gold Custody / Vault Officer',
   AUDITOR: 'Auditor & Compliance Officer',
+};
+
+export const APP_ROLE_LABELS: Record<AppRole, string> = {
+  ADMIN: 'System Administrator',
+  BRANCH_MANAGER: 'Branch Manager',
+  APPRAISER: 'Gold Appraiser',
+  CASHIER: 'Cashier & Teller',
+  CUSTOMER: 'Customer / Borrower',
 };
 
 export const ROLE_DEFAULT_ROUTES: Record<StaffRole, string> = {
@@ -145,3 +154,77 @@ export function canPerformAction(
       return false;
   }
 }
+
+/**
+ * Server-equivalent permission check for the 5 Aurum Gold roles:
+ * ADMIN, BRANCH_MANAGER, APPRAISER, CASHIER, CUSTOMER
+ */
+export function canAppRolePerform(
+  role: AppRole | string,
+  action: StaffAction | string,
+  amount?: number
+): boolean {
+  if (!role) return false;
+  if (role === 'ADMIN') return true;
+
+  const BM_APPROVAL_LIMIT = 200000; // Branch Manager ceiling: ₹2,00,000
+
+  switch (action) {
+    case 'CREATE_APPLICATION':
+      return role === 'BRANCH_MANAGER' || role === 'ADMIN';
+
+    case 'SUBMIT_APPRAISAL':
+    case 'SUBMIT_ASSESSMENT':
+    case 'EDIT_ASSESSMENT':
+      return role === 'APPRAISER' || role === 'ADMIN';
+
+    case 'APPROVE_LOAN':
+      if (role === 'BRANCH_MANAGER') {
+        if (amount !== undefined && amount > BM_APPROVAL_LIMIT) {
+          return false; // Exceeds manager limit, requires Admin
+        }
+        return true;
+      }
+      return false;
+
+    case 'REJECT_LOAN':
+    case 'RETURN_ASSESSMENT':
+      return role === 'BRANCH_MANAGER' || role === 'ADMIN';
+
+    case 'DISBURSE_LOAN':
+      return role === 'CASHIER' || role === 'ADMIN';
+
+    case 'RECORD_REPAYMENT':
+    case 'COLLECT_PAYMENT':
+      return role === 'CASHIER' || role === 'ADMIN';
+
+    case 'ACCESS_VAULT':
+    case 'CONFIRM_CUSTODY':
+      return role === 'CASHIER' || role === 'BRANCH_MANAGER' || role === 'ADMIN';
+
+    case 'AUTHORIZE_COLLATERAL_RELEASE':
+      return role === 'BRANCH_MANAGER' || role === 'ADMIN';
+
+    case 'RELEASE_GOLD':
+    case 'RELEASE_COLLATERAL':
+      return role === 'CASHIER' || role === 'ADMIN';
+
+    case 'VIEW_OWN_LOANS':
+      return role === 'CUSTOMER' || role === 'ADMIN';
+
+    case 'VIEW_AUDIT_LOGS':
+    case 'VIEW_BRANCH_REPORTS':
+      return role === 'BRANCH_MANAGER' || role === 'ADMIN';
+
+    case 'OVERRIDE_SECURITY':
+    case 'EDIT_SETTINGS':
+    case 'RESET_DATA':
+    case 'MANAGE_STAFF':
+    case 'MANAGE_BRANCHES':
+      return role === 'ADMIN';
+
+    default:
+      return false;
+  }
+}
+

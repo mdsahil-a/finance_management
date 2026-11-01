@@ -10,8 +10,7 @@ import {
   CheckCircle2, 
   ArrowRight, 
   FileText,
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 
 export const WeighterDashboardPage: React.FC = () => {

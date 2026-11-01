@@ -1,6 +1,7 @@
 import React from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { X, Printer } from 'lucide-react';
+import { maskIdProof } from '../../utils/formatters';
 
 export const PrintReceiptModal: React.FC = () => {
   const {
@@ -22,30 +23,32 @@ export const PrintReceiptModal: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
-      <div className="bg-white text-slate-900 rounded-2xl w-full max-w-2xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[92vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-xs overflow-y-auto">
+      <div className="bg-white text-zinc-900 rounded-3xl w-full max-w-2xl my-8 overflow-hidden shadow-2xl flex flex-col max-h-[92vh] border border-zinc-200/80">
         
         {/* Top Control Bar (Screen only, hidden during print) */}
-        <div className="flex items-center justify-between px-6 py-3.5 bg-slate-900 text-white print:hidden">
-          <div className="flex items-center gap-2">
-            <Printer className="w-5 h-5 text-amber-400" />
-            <span className="font-bold text-sm">
-              {activePrintModal === 'LOAN_SLIP' && 'Print Gold Loan Slip'}
-              {activePrintModal === 'PAYMENT_RECEIPT' && 'Print Payment Receipt'}
-              {activePrintModal === 'GOLD_RETURN' && 'Print Gold Return Slip'}
+        <div className="flex items-center justify-between px-6 py-4 bg-zinc-50/70 border-b border-zinc-100 text-zinc-900 print:hidden">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-full bg-amber-100/80 text-amber-800 flex items-center justify-center border border-amber-200/60">
+              <Printer className="w-4 h-4 text-amber-700" />
+            </div>
+            <span className="font-extrabold text-sm text-zinc-900">
+              {activePrintModal === 'LOAN_SLIP' && 'Official Gold Loan Voucher & Pawn Slip'}
+              {activePrintModal === 'PAYMENT_RECEIPT' && 'Official Payment Collection Receipt'}
+              {activePrintModal === 'GOLD_RETURN' && 'Gold Collateral Return Clearance Gate Pass'}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={handlePrint}
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold rounded-lg transition-colors shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-zinc-950 hover:bg-zinc-800 text-white text-xs font-bold rounded-full transition-all shadow-xs cursor-pointer"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-3.5 h-3.5 text-emerald-400" />
               <span>Print Document</span>
             </button>
             <button
               onClick={handleClose}
-              className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800"
+              className="text-zinc-400 hover:text-zinc-700 p-1.5 rounded-full hover:bg-zinc-100 transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
@@ -61,8 +64,8 @@ export const PrintReceiptModal: React.FC = () => {
               
               {/* Header */}
               <div className="border-b-2 border-slate-900 pb-4 text-center">
-                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase">
-                  {settings.shopName}
+                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase font-heading">
+                  {settings.shopName || 'Aurum Gold Finance'}
                 </h1>
                 <p className="text-xs text-slate-600 mt-0.5">{settings.shopAddress}</p>
                 <p className="text-xs font-semibold text-slate-800">Phone: {settings.shopPhone}</p>
@@ -74,19 +77,19 @@ export const PrintReceiptModal: React.FC = () => {
               {/* Loan & Customer Metadata */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div className="space-y-1">
-                  <p><strong>Loan No:</strong> <span className="font-mono font-bold text-sm">{selectedLoanForPrint.id}</span></p>
+                  <p><strong>Loan No:</strong> <span className="font-mono font-bold text-sm text-slate-900">{selectedLoanForPrint.id}</span></p>
                   <p><strong>Date Given:</strong> {selectedLoanForPrint.loanDate}</p>
                   <p><strong>First Due Date:</strong> {selectedLoanForPrint.dueDate}</p>
                   <p><strong>Safe Locker:</strong> {selectedLoanForPrint.safePacketNumber}</p>
                 </div>
                 <div className="space-y-1 text-right">
-                  <p><strong>Customer Name:</strong> <span className="font-bold">{selectedLoanForPrint.customerName}</span></p>
+                  <p><strong>Customer Name:</strong> <span className="font-bold text-slate-900">{selectedLoanForPrint.customerName}</span></p>
                   <p><strong>Mobile:</strong> {selectedLoanForPrint.customerPhone}</p>
                   {selectedLoanForPrint.customerAddress && (
                     <p><strong>Address:</strong> {selectedLoanForPrint.customerAddress}</p>
                   )}
                   {selectedLoanForPrint.customerIdProof && (
-                    <p><strong>ID Proof:</strong> {selectedLoanForPrint.customerIdProof}</p>
+                    <p><strong>ID Proof:</strong> {maskIdProof(selectedLoanForPrint.customerIdProof)}</p>
                   )}
                 </div>
               </div>
@@ -123,10 +126,10 @@ export const PrintReceiptModal: React.FC = () => {
                       <td className="p-2 text-right">
                         {selectedLoanForPrint.goldItems.reduce((a, b) => a + b.grossWeight, 0).toFixed(2)} g
                       </td>
-                      <td className="p-2 text-right text-slate-950">
+                      <td className="p-2 text-right text-slate-950 font-black">
                         {selectedLoanForPrint.totalWeightGrams.toFixed(2)} g
                       </td>
-                      <td className="p-2 text-right">
+                      <td className="p-2 text-right font-black">
                         ₹{selectedLoanForPrint.goldValueTotal.toLocaleString('en-IN')}
                       </td>
                     </tr>
@@ -182,7 +185,7 @@ export const PrintReceiptModal: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="border-b border-slate-400 pb-6"></div>
-                  <p className="mt-1 font-semibold text-slate-800">For {settings.shopName}</p>
+                  <p className="mt-1 font-semibold text-slate-800">For {settings.shopName || 'Aurum Gold Finance'}</p>
                   <p className="text-[10px] text-slate-500">({selectedLoanForPrint.createdByStaffName || 'Authorized Signatory'})</p>
                 </div>
               </div>
@@ -196,8 +199,8 @@ export const PrintReceiptModal: React.FC = () => {
               
               {/* Header */}
               <div className="border-b-2 border-slate-900 pb-4 text-center">
-                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase">
-                  {settings.shopName}
+                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase font-heading">
+                  {settings.shopName || 'Aurum Gold Finance'}
                 </h1>
                 <p className="text-xs text-slate-600 mt-0.5">{settings.shopAddress}</p>
                 <p className="text-xs font-semibold text-slate-800">Phone: {settings.shopPhone}</p>
@@ -209,13 +212,13 @@ export const PrintReceiptModal: React.FC = () => {
               {/* Receipt Details */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <p><strong>Receipt No:</strong> <span className="font-mono font-bold text-sm">{selectedPaymentForPrint.receiptNumber}</span></p>
+                  <p><strong>Receipt No:</strong> <span className="font-mono font-bold text-sm text-slate-900">{selectedPaymentForPrint.receiptNumber}</span></p>
                   <p><strong>Payment Date:</strong> {selectedPaymentForPrint.paymentDate} at {selectedPaymentForPrint.paymentTime}</p>
-                  <p><strong>Loan Reference:</strong> <span className="font-mono font-semibold">{selectedPaymentForPrint.loanId}</span></p>
+                  <p><strong>Loan Reference:</strong> <span className="font-mono font-semibold text-slate-900">{selectedPaymentForPrint.loanId}</span></p>
                   <p><strong>Payment Mode:</strong> {selectedPaymentForPrint.paymentMethod}</p>
                 </div>
                 <div className="text-right">
-                  <p><strong>Received From:</strong> <span className="font-bold">{selectedPaymentForPrint.customerName}</span></p>
+                  <p><strong>Received From:</strong> <span className="font-bold text-slate-900">{selectedPaymentForPrint.customerName}</span></p>
                   <p><strong>Mobile:</strong> {selectedPaymentForPrint.customerPhone}</p>
                   <p><strong>Payment Type:</strong> <span className="font-semibold text-emerald-700">{selectedPaymentForPrint.paymentType}</span></p>
                 </div>
@@ -241,7 +244,7 @@ export const PrintReceiptModal: React.FC = () => {
                     )}
                     {selectedPaymentForPrint.principalPaid > 0 && (
                       <tr>
-                        <td className="p-2.5 font-medium">Principal Loan Amount Paid</td>
+                        <td className="p-2.5 font-medium">Principal Loan Amount Repaid</td>
                         <td className="p-2.5 text-right font-semibold">
                           ₹{selectedPaymentForPrint.principalPaid.toLocaleString('en-IN')}
                         </td>
@@ -260,18 +263,18 @@ export const PrintReceiptModal: React.FC = () => {
               {/* Remaining Balance Summary */}
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs flex items-center justify-between">
                 <div>
-                  <span className="text-slate-500 block">Remaining Loan Balance:</span>
-                  <span className="text-base font-bold text-slate-900">
+                  <span className="text-slate-500 block">Remaining Loan Principal Balance:</span>
+                  <span className="text-base font-black text-slate-900">
                     ₹{selectedPaymentForPrint.remainingPrincipalAfter.toLocaleString('en-IN')}
                   </span>
                 </div>
                 {selectedPaymentForPrint.remainingPrincipalAfter === 0 ? (
                   <div className="text-right text-emerald-700 font-bold">
-                    ✓ Full Loan Settled! Gold is ready to return.
+                    Full Loan Settled &mdash; Gold collateral released and ready for hand-over.
                   </div>
                 ) : (
                   <div className="text-right text-slate-500">
-                    Next monthly interest due next month.
+                    Next monthly interest due on scheduled date.
                   </div>
                 )}
               </div>
@@ -285,7 +288,7 @@ export const PrintReceiptModal: React.FC = () => {
                 <div className="text-center">
                   <div className="border-b border-slate-400 pb-6"></div>
                   <p className="mt-1 font-semibold text-slate-800">Authorized Cashier Signature</p>
-                  <p className="text-[10px] text-slate-500">({selectedPaymentForPrint.receivedByStaffName || settings.shopName})</p>
+                  <p className="text-[10px] text-slate-500">({selectedPaymentForPrint.receivedByStaffName || settings.shopName || 'Aurum Gold Finance'})</p>
                 </div>
               </div>
 
@@ -298,28 +301,28 @@ export const PrintReceiptModal: React.FC = () => {
               
               {/* Header */}
               <div className="border-b-2 border-slate-900 pb-4 text-center">
-                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase">
-                  {settings.shopName}
+                <h1 className="text-xl font-black tracking-tight text-slate-950 uppercase font-heading">
+                  {settings.shopName || 'Aurum Gold Finance'}
                 </h1>
                 <p className="text-xs text-slate-600 mt-0.5">{settings.shopAddress}</p>
                 <p className="text-xs font-semibold text-slate-800">Phone: {settings.shopPhone}</p>
                 <div className="mt-2 inline-block px-3 py-1 bg-blue-600 text-white text-xs font-bold rounded tracking-wider uppercase">
-                  Gold Return & Loan Closure Acknowledgment
+                  Gold Return & Loan Closure Gate Pass
                 </div>
               </div>
 
               {/* Loan Details */}
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div>
-                  <p><strong>Loan No:</strong> <span className="font-mono font-bold">{selectedLoanForPrint.id}</span></p>
+                  <p><strong>Loan No:</strong> <span className="font-mono font-bold text-slate-900">{selectedLoanForPrint.id}</span></p>
                   <p><strong>Loan Date:</strong> {selectedLoanForPrint.loanDate}</p>
                   <p><strong>Settlement Date:</strong> {selectedLoanForPrint.returnedDate || new Date().toISOString().split('T')[0]}</p>
                   <p><strong>Safe Packet Released:</strong> {selectedLoanForPrint.safePacketNumber}</p>
                 </div>
                 <div className="text-right">
-                  <p><strong>Customer Name:</strong> <span className="font-bold">{selectedLoanForPrint.customerName}</span></p>
+                  <p><strong>Customer Name:</strong> <span className="font-bold text-slate-900">{selectedLoanForPrint.customerName}</span></p>
                   <p><strong>Mobile:</strong> {selectedLoanForPrint.customerPhone}</p>
-                  <p><strong>Loan Status:</strong> <span className="text-emerald-600 font-bold">Fully Settled (₹0 Due)</span></p>
+                  <p><strong>Loan Status:</strong> <span className="text-emerald-700 font-bold">Fully Settled (₹0 Due)</span></p>
                 </div>
               </div>
 
@@ -345,7 +348,7 @@ export const PrintReceiptModal: React.FC = () => {
                         <td className="p-2 font-medium">{item.name}</td>
                         <td className="p-2 text-center">{item.purity}</td>
                         <td className="p-2 text-right font-bold">{item.netWeight.toFixed(2)} g</td>
-                        <td className="p-2 text-center text-emerald-700 font-semibold">Original / Intact</td>
+                        <td className="p-2 text-center text-emerald-700 font-semibold">Original / Verified</td>
                       </tr>
                     ))}
                     <tr className="bg-slate-50 font-bold border-t border-slate-300">
@@ -361,9 +364,9 @@ export const PrintReceiptModal: React.FC = () => {
 
               {/* Customer Acknowledgment Statement */}
               <div className="bg-slate-50 border border-slate-200 rounded-lg p-3.5 text-xs text-slate-700 space-y-1">
-                <p className="font-bold text-slate-900">Customer Declaration:</p>
+                <p className="font-bold text-slate-900">Customer Declaration & Release Clearance:</p>
                 <p>
-                  "I, <strong>{selectedLoanForPrint.customerName}</strong>, hereby declare that I have received all my gold ornaments listed above in good, undamaged condition from {settings.shopName}. My loan account {selectedLoanForPrint.id} is fully cleared and settled with no outstanding dues."
+                  "I, <strong>{selectedLoanForPrint.customerName}</strong>, hereby declare that I have received all my gold ornaments listed above in good, intact condition from {settings.shopName || 'Aurum Gold Finance'}. My loan account {selectedLoanForPrint.id} is fully cleared and settled with no outstanding dues."
                 </p>
               </div>
 
@@ -376,7 +379,7 @@ export const PrintReceiptModal: React.FC = () => {
                 </div>
                 <div className="text-center">
                   <div className="border-b border-slate-400 pb-8"></div>
-                  <p className="mt-1 font-semibold text-slate-800">For {settings.shopName}</p>
+                  <p className="mt-1 font-semibold text-slate-800">For {settings.shopName || 'Aurum Gold Finance'}</p>
                   <p className="text-[10px] text-slate-500">Gold Handed Over By (Locker Custodian)</p>
                 </div>
               </div>

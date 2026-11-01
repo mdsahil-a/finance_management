@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { 
-  Sparkles, 
+  Coins, 
   ArrowRight, 
   ShieldCheck, 
   Clock, 
@@ -28,7 +28,7 @@ export const HomePage: React.FC = () => {
             {/* Left Content */}
             <div className="lg:col-span-6 space-y-6">
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#701525]/10 border border-[#701525]/20 text-[#701525] text-xs font-bold uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
+                <Coins className="w-3.5 h-3.5 text-[#C9A45C]" />
                 <span>GOLD LOANS MADE SIMPLE</span>
               </div>
 
@@ -93,7 +93,7 @@ export const HomePage: React.FC = () => {
               <div className="sm:absolute -bottom-8 -left-6 bg-white/95 backdrop-blur-md rounded-2xl p-5 shadow-2xl border border-[#C9A45C]/40 max-w-sm mt-4 sm:mt-0">
                 <div className="flex items-center justify-between pb-2 border-b border-gray-100">
                   <span className="text-[10px] uppercase font-bold text-[#A71930] tracking-wider flex items-center gap-1">
-                    <Sparkles className="w-3 h-3 text-[#C9A45C]" />
+                    <Coins className="w-3 h-3 text-[#C9A45C]" />
                     Illustrative Loan Snapshot
                   </span>
                   <span className="text-[10px] text-gray-400 font-mono">Demo Model</span>

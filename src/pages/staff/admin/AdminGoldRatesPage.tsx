@@ -9,7 +9,6 @@ import {
   CheckCircle2, 
   Clock, 
   Calendar,
-  Sparkles,
   Info
 } from 'lucide-react';
 

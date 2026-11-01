@@ -13,8 +13,7 @@ import {
   Calendar, 
   X, 
   CheckCircle2,
-  Layers,
-  Sparkles
+  Layers
 } from 'lucide-react';
 
 export const AdminSchemesPage: React.FC = () => {

@@ -67,3 +67,29 @@ export function formatDate(isoString: string | null | undefined): string {
     return isoString;
   }
 }
+
+/**
+ * Masks sensitive ID proofs such as Aadhaar (e.g., "Aadhaar: •••• •••• 1024") or PAN
+ */
+export function maskIdProof(idProof: string | null | undefined): string {
+  if (!idProof) return 'Verified ID';
+  const trimmed = idProof.trim();
+  // Check if contains Aadhaar format or digits
+  const parts = trimmed.split(':');
+  if (parts.length > 1) {
+    const label = parts[0].trim();
+    const val = parts.slice(1).join(':').trim();
+    const digitsOnly = val.replace(/\D/g, '');
+    if (digitsOnly.length >= 4) {
+      const lastFour = digitsOnly.slice(-4);
+      return `${label}: •••• •••• ${lastFour}`;
+    }
+    return `${label}: •••• ${val.slice(-4)}`;
+  }
+  const digitsOnly = trimmed.replace(/\D/g, '');
+  if (digitsOnly.length >= 4) {
+    return `ID: •••• •••• ${digitsOnly.slice(-4)}`;
+  }
+  return trimmed;
+}
+

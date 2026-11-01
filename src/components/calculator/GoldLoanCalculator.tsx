@@ -6,7 +6,6 @@ import { formatCurrency, formatGrams } from '../../utils/formatters';
 import { 
   Calculator, 
   ArrowRight, 
-  Sparkles, 
   RotateCcw, 
   CheckCircle2, 
   AlertCircle,
@@ -83,7 +82,7 @@ export const GoldLoanCalculator: React.FC<GoldLoanCalculatorProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between pb-6 border-b border-[#E8E2D8] gap-4">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#FAF3E0] text-[#701525] text-xs font-bold mb-2">
-            <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
+            <TrendingUp className="w-3.5 h-3.5 text-[#C9A45C]" />
             <span>Interactive Financial Tool</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-black text-[#701525] font-display">

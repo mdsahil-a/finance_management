@@ -7,7 +7,6 @@ import {
   ChevronDown, 
   ChevronUp, 
   X, 
-  Sparkles,
   BookOpen
 } from 'lucide-react';
 

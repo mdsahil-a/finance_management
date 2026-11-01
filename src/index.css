@@ -1,18 +1,41 @@
 @import "tailwindcss";
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden !important;
+  margin: 0;
+  padding: 0;
+}
+
 @layer base {
   html {
     min-width: 320px;
+    max-width: 100vw;
+    overflow-x: hidden !important;
     scroll-behavior: smooth;
-    background-color: #020617;
+    background-color: #fbfbfc;
+    color: #09090b;
   }
   body {
-    background-color: #020617;
-    color: #f8fafc;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 100vw;
+    overflow-x: hidden !important;
+    background-color: #fbfbfc;
+    color: #09090b;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
+  }
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.025em;
   }
   button, input, select, textarea {
     font: inherit;
@@ -22,20 +45,34 @@
   }
 }
 
+/* Finvo Modern Aesthetics */
+.card-finvo {
+  background: #ffffff;
+  border: 1px solid rgba(228, 228, 231, 0.8);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.04);
+}
+
+.pill-button {
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f4f4f5;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #d4d4d8;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #a1a1aa;
 }
 
 /* Print styles for receipts & loan slips */
@@ -44,7 +81,7 @@
     background: #ffffff !important;
     color: #000000 !important;
   }
-  nav, header, footer {
+  nav, header, footer, .no-print {
     display: none !important;
   }
 }

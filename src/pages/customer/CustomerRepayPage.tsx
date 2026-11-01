@@ -14,7 +14,6 @@ import {
   Vault, 
   Download,
   Calendar,
-  Sparkles,
   Check
 } from 'lucide-react';
 

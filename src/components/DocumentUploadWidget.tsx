@@ -1,5 +1,5 @@
-﻿import React, { useRef, useState, useCallback } from "react";
-import { Upload, X, CheckCircle2, ImageIcon, AlertCircle, Sparkles } from "lucide-react";
+import React, { useRef, useState, useCallback } from "react";
+import { Upload, X, CheckCircle2, ImageIcon, AlertCircle, FileCheck2 } from "lucide-react";
 import { processUploadedFile, ProcessedFile } from "../utils/fileUpload";
 
 export interface UploadedDocumentState {
@@ -121,7 +121,7 @@ const DocumentUploadWidget: React.FC<DocumentUploadWidgetProps> = ({
         {sampleUrl && !value && (
           <button type="button" onClick={handleUseSample} disabled={isProcessing}
             className="flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 hover:bg-amber-100 transition-colors disabled:opacity-50">
-            <Sparkles className="w-3 h-3" />{sampleLabel}
+            <FileCheck2 className="w-3 h-3" />{sampleLabel}
           </button>
         )}
       </div>

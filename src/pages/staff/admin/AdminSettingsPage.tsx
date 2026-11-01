@@ -8,7 +8,6 @@ import {
   Check, 
   AlertTriangle, 
   ShieldAlert, 
-  Sparkles,
   X
 } from 'lucide-react';
 

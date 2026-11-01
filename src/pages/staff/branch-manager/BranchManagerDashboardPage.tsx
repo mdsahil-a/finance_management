@@ -470,16 +470,18 @@ export const BranchManagerDashboardPage: React.FC<BranchManagerDashboardPageProp
                   <button
                     type="button"
                     onClick={() => setDecisionType('Approved')}
-                    className={`py-2.5 rounded-xl border font-bold text-center transition-all ${decisionType === 'Approved' ? 'bg-emerald-700 text-white border-emerald-700' : 'border-gray-300 text-gray-700'}`}
+                    className={`py-2.5 px-3 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${decisionType === 'Approved' ? 'bg-emerald-700 text-white border-emerald-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
                   >
-                    ✓ Approve Sanction
+                    <Check className="w-4 h-4" />
+                    <span>Approve Sanction</span>
                   </button>
                   <button
                     type="button"
                     onClick={() => setDecisionType('Rejected')}
-                    className={`py-2.5 rounded-xl border font-bold text-center transition-all ${decisionType === 'Rejected' ? 'bg-rose-700 text-white border-rose-700' : 'border-gray-300 text-gray-700'}`}
+                    className={`py-2.5 px-3 rounded-xl border font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${decisionType === 'Rejected' ? 'bg-rose-700 text-white border-rose-700' : 'border-gray-300 text-gray-700 hover:bg-gray-50'}`}
                   >
-                    ✕ Reject Application
+                    <X className="w-4 h-4" />
+                    <span>Reject Application</span>
                   </button>
                 </div>
               </div>

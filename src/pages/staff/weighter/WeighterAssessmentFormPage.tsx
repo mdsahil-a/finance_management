@@ -13,7 +13,6 @@ import {
   CheckCircle2, 
   AlertCircle, 
   History, 
-  Sparkles,
   Info,
   Clock,
   Plus,
@@ -437,7 +436,7 @@ export const WeighterAssessmentFormPage: React.FC = () => {
           <div className="p-5 rounded-2xl bg-[#701525] text-white space-y-4">
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <span className="text-xs font-bold uppercase tracking-wider text-[#FFE59E] flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#FFE59E]" />
+                <Scale className="w-4 h-4 text-[#FFE59E]" />
                 Aggregate Physical Gold Valuation Summary
               </span>
               <span className="text-[11px] text-gray-300">

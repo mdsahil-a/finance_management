@@ -1,13 +1,13 @@
 import React from 'react';
 import { GoldLoanCalculator } from '../../components/calculator/GoldLoanCalculator';
-import { Sparkles, Info, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { TrendingUp, Info, ShieldCheck, CheckCircle2 } from 'lucide-react';
 
 export const CalculatorPage: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
       <div className="text-center max-w-3xl mx-auto space-y-3">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#701525]/10 text-[#701525] text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
+          <TrendingUp className="w-3.5 h-3.5 text-[#C9A45C]" />
           <span>Real-Time Estimation Tool</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-[#701525] font-display">

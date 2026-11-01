@@ -8,7 +8,7 @@ import {
   CreditCard, 
   Search, 
   ArrowRight, 
-  Sparkles,
+  Coins,
   AlertCircle
 } from 'lucide-react';
 
@@ -35,7 +35,7 @@ export const HowItWorksPage: React.FC = () => {
       role: 'Customer',
       title: 'Review Illustrative Valuation',
       desc: 'The interactive system computes immediate estimated gold value and eligible loan borrowing limit based on benchmark rates.',
-      icon: Sparkles,
+      icon: Coins,
       badge: 'Instant Estimate',
     },
     {
@@ -93,7 +93,7 @@ export const HowItWorksPage: React.FC = () => {
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#701525]/10 text-[#701525] text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-[#C9A45C]" />
+          <Coins className="w-3.5 h-3.5 text-[#C9A45C]" />
           <span>Complete Lifecycle Walkthrough</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-black text-[#701525] font-display">

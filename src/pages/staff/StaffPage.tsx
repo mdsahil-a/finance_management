@@ -9,7 +9,9 @@ import {
   KeyRound, 
   CheckCircle2, 
   X,
-  UserCheck
+  UserCheck,
+  User,
+  ArrowRight
 } from 'lucide-react';
 import { StaffRole, StaffUser } from '../../types/finance';
 
@@ -23,22 +25,22 @@ export const StaffPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [pin, setPin] = useState('1234');
 
-  const roleColors: Record<string, string> = {
-    ADMIN: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
-    MANAGER: 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-    LOAN_OFFICER: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-    APPRAISER: 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30',
-    CASHIER: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30',
-    CUSTODIAN: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/30',
+  const roleBadges: Record<string, string> = {
+    ADMIN: 'bg-purple-50 text-purple-700 border-purple-200',
+    MANAGER: 'bg-blue-50 text-blue-700 border-blue-200',
+    LOAN_OFFICER: 'bg-amber-50 text-amber-800 border-amber-200',
+    APPRAISER: 'bg-yellow-50 text-yellow-800 border-yellow-200',
+    CASHIER: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    CUSTODIAN: 'bg-cyan-50 text-cyan-800 border-cyan-200',
   };
 
   const roleDescriptions: Record<string, string> = {
-    ADMIN: 'Full access to all modules, gold rates, daily cash book, and staff management.',
-    MANAGER: 'Approves loans, oversees cash book, monitors safe and customer portfolio.',
-    LOAN_OFFICER: 'Issues new gold loans, customer onboarding, prints loan vouchers.',
-    APPRAISER: 'Tests gold purity, checks weight of ornaments, uses gold calculator.',
-    CASHIER: 'Receives payments (interest & principal), manages cash drawer, prints receipts.',
-    CUSTODIAN: 'Manages physical safe locker bays, receives and returns gold packets.',
+    ADMIN: 'Full counter control, gold rate revisions, staff permissions, and master reset.',
+    MANAGER: 'Oversees daily collections, monitors safe vault, customer accounts, and approvals.',
+    LOAN_OFFICER: 'Issues new gold loans, customer onboarding, pledges, and prints loan vouchers.',
+    APPRAISER: 'Evaluates gold purity, weighs ornaments, calculates market value against rates.',
+    CASHIER: 'Records payments (interest & principal), manages cash drawer, issues receipts.',
+    CUSTODIAN: 'Manages physical safe locker bays, checks in packets and returns collateral upon settlement.',
   };
 
   const handleCreateStaff = (e: React.FormEvent) => {
@@ -69,50 +71,56 @@ export const StaffPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-6xl mx-auto">
       
       {/* Title */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <Users className="w-6 h-6 text-amber-400" />
-            <span>Staff & Team Management</span>
+          <h2 className="text-xl sm:text-2xl font-extrabold text-zinc-900 tracking-tight flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-full bg-amber-100/80 text-amber-800 flex items-center justify-center border border-amber-200/60">
+              <Users className="w-5 h-5 text-amber-700" />
+            </div>
+            <span>Staff & Counter Team</span>
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Manage multi-staff counter roles, permissions, and active logins
+          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
+            Multi-role counter assignments, authorizations, and active staff logins.
           </p>
         </div>
 
         <button
           onClick={() => setIsAddStaffModalOpen(true)}
-          className="inline-flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm rounded-xl shadow-lg transition-all hover:scale-[1.02] self-start sm:self-auto"
+          className="inline-flex items-center gap-2 px-5 py-2.5 bg-zinc-950 hover:bg-zinc-800 text-white font-bold text-xs rounded-full shadow-xs transition-all self-start sm:self-auto cursor-pointer"
         >
-          <PlusCircle className="w-4 h-4" />
-          <span>+ Add Staff Member</span>
+          <PlusCircle className="w-4 h-4 text-emerald-400" />
+          <span>Add Staff Member</span>
         </button>
       </div>
 
       {/* Current Active Counter Staff Banner */}
-      <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-850 border border-slate-800 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-lg">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-lg">
+      <div className="p-6 bg-white border border-zinc-200/80 rounded-3xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-zinc-950 text-white flex items-center justify-center font-extrabold text-lg shadow-xs">
             {currentStaff.name.charAt(0)}
           </div>
           <div>
-            <div className="flex items-center gap-2">
-              <span className="font-bold text-white text-sm sm:text-base">{currentStaff.name}</span>
-              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${roleColors[currentStaff.role]}`}>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-extrabold text-zinc-900 text-base">{currentStaff.name}</span>
+              <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${roleBadges[currentStaff.role]}`}>
                 {currentStaff.role.replace('_', ' ')}
               </span>
+              <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                Active on Counter
+              </span>
             </div>
-            <p className="text-xs text-slate-400">
-              Currently signed in on this counter · Phone: {currentStaff.phone}
+            <p className="text-xs text-zinc-500 mt-1">
+              Phone: <strong className="text-zinc-800">{currentStaff.phone}</strong> {currentStaff.email ? `· ${currentStaff.email}` : ''}
             </p>
           </div>
         </div>
 
-        <div className="text-xs text-slate-400">
-          Role Permission: <strong className="text-white">{roleDescriptions[currentStaff.role]}</strong>
+        <div className="text-xs text-zinc-600 bg-zinc-50 p-3.5 rounded-2xl border border-zinc-200/70 max-w-md">
+          <span className="text-[10px] text-zinc-400 uppercase font-bold tracking-wider block">Assigned Responsibility:</span>
+          <p className="text-zinc-700 mt-0.5 leading-relaxed">{roleDescriptions[currentStaff.role]}</p>
         </div>
       </div>
 
@@ -124,91 +132,78 @@ export const StaffPage: React.FC = () => {
           return (
             <div
               key={staff.id}
-              className={`p-5 rounded-2xl border shadow-lg flex flex-col justify-between space-y-4 transition-all ${
+              className={`p-6 rounded-3xl border shadow-xs flex flex-col justify-between space-y-4 transition-all ${
                 isCurrent
-                  ? 'bg-slate-900 border-amber-500/40 ring-1 ring-amber-500/20'
-                  : 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                  ? 'bg-amber-50/30 border-amber-300 ring-2 ring-amber-300/30'
+                  : 'bg-white border-zinc-200/80 hover:border-zinc-300'
               }`}
             >
               <div>
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-bold text-white text-base">{staff.name}</h3>
-                    <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-                      <Phone className="w-3.5 h-3.5 text-slate-500" />
+                    <h3 className="font-extrabold text-zinc-900 text-base">{staff.name}</h3>
+                    <p className="text-xs text-zinc-500 flex items-center gap-1 mt-1">
+                      <Phone className="w-3.5 h-3.5 text-zinc-400" />
                       <span>{staff.phone}</span>
                     </p>
                   </div>
-                  <span
-                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${
-                      roleColors[staff.role]
-                    }`}
-                  >
+                  <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border shrink-0 ${roleBadges[staff.role]}`}>
                     {staff.role.replace('_', ' ')}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-400 mt-3">
+                {staff.email && (
+                  <p className="text-xs text-zinc-500 mt-2.5 flex items-center gap-1.5 truncate">
+                    <Mail className="w-3.5 h-3.5 text-zinc-400 shrink-0" />
+                    <span>{staff.email}</span>
+                  </p>
+                )}
+
+                <p className="text-xs text-zinc-600 mt-3 bg-zinc-50 p-3 rounded-2xl border border-zinc-100 leading-relaxed">
                   {roleDescriptions[staff.role]}
                 </p>
 
-                <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs">
-                  <span className="text-slate-500 flex items-center gap-1 font-mono">
-                    <KeyRound className="w-3.5 h-3.5" />
-                    PIN: <strong>{staff.pin}</strong>
-                  </span>
-                  <span className="text-slate-500">
-                    Joined: {staff.joinedDate}
+                <div className="flex items-center justify-between text-xs text-zinc-500 mt-3 pt-2.5 border-t border-zinc-100">
+                  <span>Joined: {staff.joinedDate}</span>
+                  <span className="font-mono text-[11px] bg-zinc-100 px-2 py-0.5 rounded-full text-zinc-700 font-bold truncate max-w-[140px]" title={staff.email || staff.username}>
+                    {staff.email || staff.username}
                   </span>
                 </div>
               </div>
 
-              {/* Action Buttons */}
-              <div className="flex items-center gap-2 pt-2 border-t border-slate-800">
-                {!isCurrent ? (
+              {/* Action Button */}
+              <div className="pt-2">
+                {isCurrent ? (
+                  <div className="w-full py-2 bg-emerald-50 text-emerald-800 rounded-full text-xs font-bold text-center border border-emerald-200 flex items-center justify-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Currently Active User</span>
+                  </div>
+                ) : (
                   <button
                     onClick={() => switchStaff(staff.id)}
-                    className="flex-1 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 rounded-lg text-xs font-bold transition-colors"
+                    className="w-full py-2 bg-zinc-100 hover:bg-zinc-950 hover:text-white text-zinc-800 font-bold rounded-full text-xs transition-all cursor-pointer text-center"
                   >
-                    Switch to this User
+                    Switch Counter to {staff.name.split(' ')[0]} &rarr;
                   </button>
-                ) : (
-                  <span className="flex-1 py-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 rounded-lg text-xs font-bold text-center">
-                    ✓ Currently Active
-                  </span>
                 )}
-
-                <button
-                  onClick={() => updateStaffUser(staff.id, { isActive: !staff.isActive })}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
-                    staff.isActive
-                      ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                      : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
-                  }`}
-                >
-                  {staff.isActive ? 'Active' : 'Disabled'}
-                </button>
               </div>
-
             </div>
           );
         })}
       </div>
 
-      {/* Role Explanations Guide Card */}
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl space-y-4">
-        <h3 className="font-bold text-white text-sm flex items-center gap-2">
-          <ShieldCheck className="w-5 h-5 text-amber-400" />
-          <span>Role Responsibilities & Access Reference</span>
+      {/* Role Responsibilities Reference Card */}
+      <div className="bg-white border border-zinc-200/80 rounded-3xl p-6 shadow-xs space-y-4">
+        <h3 className="font-extrabold text-sm text-zinc-900">
+          Counter Role & Permissions Reference:
         </h3>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
           {Object.entries(roleDescriptions).map(([r, desc]) => (
-            <div key={r} className="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60">
-              <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border mb-1.5 ${roleColors[r]}`}>
+            <div key={r} className="p-3.5 bg-zinc-50/80 rounded-2xl border border-zinc-200/60 space-y-1.5">
+              <span className={`inline-block text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border ${roleBadges[r]}`}>
                 {r.replace('_', ' ')}
               </span>
-              <p className="text-slate-300 text-[11px] leading-relaxed">{desc}</p>
+              <p className="text-zinc-600 text-[11px] leading-relaxed">{desc}</p>
             </div>
           ))}
         </div>
@@ -216,87 +211,100 @@ export const StaffPage: React.FC = () => {
 
       {/* Add Staff Modal */}
       {isAddStaffModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="bg-slate-900 border border-slate-800 text-white rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-base">Add New Staff Member</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-xs">
+          <div className="bg-white border border-zinc-200/80 text-zinc-900 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl">
+            
+            <div className="flex items-center justify-between px-6 py-4.5 border-b border-zinc-100 bg-zinc-50/50">
+              <h3 className="font-extrabold text-base text-zinc-900">Add New Staff Member</h3>
               <button
                 onClick={() => setIsAddStaffModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-zinc-400 hover:text-zinc-700 p-1.5 rounded-full hover:bg-zinc-100 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateStaff} className="space-y-4 text-xs">
+            <form onSubmit={handleCreateStaff} className="p-6 space-y-4 text-xs">
               <div>
-                <label className="block font-medium text-slate-300 mb-1">Full Name *</label>
+                <label className="block text-zinc-700 font-bold mb-1.5">Full Name *</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Amit Kulkarni"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  placeholder="e.g. Anand Kulkarni"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:ring-2 focus:ring-zinc-900/10 outline-none font-medium transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-slate-300 mb-1">Role / Designation *</label>
+                <label className="block text-zinc-700 font-bold mb-1.5">Role & Responsibility *</label>
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value as StaffRole)}
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 outline-none font-medium transition-all"
                 >
-                  <option value="LOAN_OFFICER">Loan Officer (Counter Lending)</option>
-                  <option value="CASHIER">Cashier (Payments & Drawer Cash)</option>
-                  <option value="APPRAISER">Gold Appraiser (Testing & Purity)</option>
-                  <option value="CUSTODIAN">Safe Custodian (Locker Inventory)</option>
-                  <option value="MANAGER">Branch Manager (Approvals)</option>
-                  <option value="ADMIN">Admin / Owner (Full Control)</option>
+                  <option value="LOAN_OFFICER">Loan Officer (New Loans & Pledges)</option>
+                  <option value="CASHIER">Cashier (Collections & Cash Drawer)</option>
+                  <option value="APPRAISER">Appraiser (Gold Valuation & Purity)</option>
+                  <option value="CUSTODIAN">Custodian (Safe Vault & Locker Packets)</option>
+                  <option value="MANAGER">Manager (Authorizations & Reports)</option>
+                  <option value="ADMIN">Administrator (Full Access)</option>
                 </select>
               </div>
 
               <div>
-                <label className="block font-medium text-slate-300 mb-1">Mobile Number *</label>
+                <label className="block text-zinc-700 font-bold mb-1.5">Contact Phone *</label>
                 <input
                   type="text"
                   required
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="e.g. 98200 12345"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:ring-2 focus:ring-zinc-900/10 outline-none transition-all"
                 />
               </div>
 
               <div>
-                <label className="block font-medium text-slate-300 mb-1">4-Digit Login PIN</label>
+                <label className="block text-zinc-700 font-bold mb-1.5">Email Address</label>
                 <input
-                  type="password"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="e.g. staff@aurumgold.example"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:ring-2 focus:ring-zinc-900/10 outline-none transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-zinc-700 font-bold mb-1.5">Quick Login PIN (4 digits)</label>
+                <input
+                  type="text"
                   maxLength={4}
                   value={pin}
                   onChange={(e) => setPin(e.target.value)}
                   placeholder="1234"
-                  className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm text-white font-mono focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="w-full px-4 py-2.5 bg-zinc-50 border border-zinc-200 rounded-2xl text-xs text-zinc-900 focus:bg-white focus:border-zinc-950 focus:ring-2 focus:ring-zinc-900/10 outline-none font-mono font-bold transition-all"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-800">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-zinc-100">
                 <button
                   type="button"
                   onClick={() => setIsAddStaffModalOpen(false)}
-                  className="px-4 py-2 bg-slate-800 text-slate-300 rounded-lg font-medium"
+                  className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-700 font-bold rounded-full text-xs cursor-pointer transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg"
+                  className="px-5 py-2 bg-zinc-950 hover:bg-zinc-800 text-white font-bold rounded-full text-xs transition-all cursor-pointer shadow-xs"
                 >
-                  Add Staff Member
+                  Create Staff User
                 </button>
               </div>
             </form>
+
           </div>
         </div>
       )}

@@ -9,7 +9,6 @@ import {
   Bell, 
   LogOut, 
   ArrowLeft,
-  Sparkles,
   CreditCard
 } from 'lucide-react';
 
